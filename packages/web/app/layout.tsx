@@ -1,3 +1,11 @@
+'use client'
+
+import '@fontsource/noto-sans-sc/400.css'
+
+import Header from '@/components/header/header'
+import theme from '@/theme'
+import { CacheProvider } from '@chakra-ui/next-js'
+import { ChakraProvider } from '@chakra-ui/react'
 import './globals.css'
 
 export const metadata = {
@@ -12,7 +20,14 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        <CacheProvider>
+          <ChakraProvider theme={theme}>
+            <Header />
+            {children}
+          </ChakraProvider>
+        </CacheProvider>
+      </body>
     </html>
   )
 }
