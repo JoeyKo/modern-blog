@@ -1,6 +1,7 @@
 'use client'
 
 import '@fontsource/noto-sans-sc/400.css'
+import 'bytemd/dist/index.css'
 
 import Header from '@/components/header/header'
 import theme from '@/theme'
@@ -18,8 +19,9 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
+
   return (
-    <html lang="en">
+    <html lang="zh-CN">
       <body>
         <CacheProvider>
           <ChakraProvider theme={theme}>

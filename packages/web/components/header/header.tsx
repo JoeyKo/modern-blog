@@ -1,30 +1,42 @@
 /* eslint-disable react/no-children-prop */
-import { SearchIcon } from "@chakra-ui/icons"
+import { EditIcon, SearchIcon } from "@chakra-ui/icons"
+import { Link } from "@chakra-ui/next-js"
 import { Button, Flex, HStack, Input, InputGroup, InputLeftElement, Spacer } from "@chakra-ui/react"
 import Image from "next/image"
+import { useSelectedLayoutSegment } from 'next/navigation';
 
-const Header: React.FC = () => {
+const Header = () => {
+  const segment = useSelectedLayoutSegment();
 
   return (
-    <Flex p="2" gap='2' as="header">
-      <Image
-        src="/dev.svg"
-        alt="Dev"
-        width={40}
-        height={40}
-        priority
-      />
+    <Flex
+      hidden={segment === "editor"}
+      p="2" gap='2' bg="gray.50" as="header" boxShadow={"base"} position="sticky" top="0" zIndex={10}
+    >
+      <Link href={"/"}>
+        <Image
+          src="/dev.svg"
+          alt="Dev"
+          width={40}
+          style={{ minWidth: '40px', minHeight: '40px' }}
+          height={40}
+          priority
+        />
+      </Link>
       <Spacer />
       <InputGroup borderColor="twitter.500" variant="filled">
         <InputLeftElement
           pointerEvents='none'
           children={<SearchIcon color='gray.300' />}
         />
-        <Input placeholder='搜索博客' />
+        <Input placeholder='搜索文章' _placeholder={{
+          color: "gray.400"
+        }} />
       </InputGroup>
       <Spacer />
       <HStack>
-        <Button colorScheme="twitter">登录</Button>
+        <Link href="/editor"><Button colorScheme="twitter" leftIcon={<EditIcon />}>写文章</Button></Link>
+        <Button colorScheme="twitter" variant="ghost">登录</Button>
       </HStack>
     </Flex>
   )
