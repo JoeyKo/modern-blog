@@ -11,7 +11,15 @@ const Header = () => {
   return (
     <Flex
       hidden={segment === "editor"}
-      p="2" gap='2' bg="gray.50" as="header" boxShadow={"base"} position="sticky" top="0" zIndex={10}
+      py="2"
+      px="2"
+      gap='2'
+      bg="gray.50" 
+      as="header" 
+      boxShadow={"base"} 
+      position="sticky" 
+      top="0" 
+      zIndex={10}
     >
       <Link href={"/"}>
         <Image

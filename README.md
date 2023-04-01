@@ -1,15 +1,24 @@
 1. Install
 ```
-npm install
+yarn install
+```
+2. Dev
+```
+lerna run dev
 ```
 
-2. Build
+3. Build
 ```
-npm run build
+lerna run build
 ```
 
-3. Add Package
+4. Add Package
 ```
 lerna add module-1 packages/web
 lerna add module-2 packages/api
+```
+
+5. Remove Package
+```
+lerna exec 'yarn remove module-1' --scope=web
 ```

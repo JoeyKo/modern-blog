@@ -1,6 +1,6 @@
 import { ChatIcon, TriangleUpIcon, ViewIcon } from "@chakra-ui/icons";
 import { Link } from "@chakra-ui/next-js";
-import { Box, Card, CardBody, Heading, HStack, Icon, Text } from "@chakra-ui/react"
+import { Box, Card, CardBody, Center, Divider, Heading, HStack, Icon, Text } from "@chakra-ui/react"
 import Image from "next/image"
 import { IUser } from "../user-list/user-card";
 
@@ -26,16 +26,24 @@ const ArticleCard: React.FC<IArticle> = ({
         _hover={{
           bg: 'gray.100'
         }}
-        p={2}
+        py={1}
         direction={{ base: 'column', sm: 'row' }}
       >
         <CardBody p="2">
-          <HStack>
-            <Heading as="h5" size='xs' fontWeight={500} color={"gray.600"} mb={2}>{user.name}</Heading>
+          <HStack align={"center"} spacing={3} mb={3}>
+            <Heading as="h5" size='xs' fontWeight={500} lineHeight={"18px"} color={"gray.600"}>{user.name}</Heading>
+            <Center height='16px'>
+              <Divider orientation='vertical' />
+            </Center>
+            <Text fontSize='xs' as="span" lineHeight={"18px"} color={"gray.500"}>2天前</Text>
+            <Center height='16px'>
+              <Divider orientation='vertical' />
+            </Center>
+            <Text fontSize='xs' as="span" lineHeight={"18px"} color={"gray.500"}>前端</Text>
           </HStack>
-          <Heading size="md" fontSize={"2xl"}>{title}</Heading>
-          <Text my={2} noOfLines={1} color={"gray.400"}>{summary}</Text>
-          <HStack color={"gray.400"} align="center">
+          <Heading size="md" fontSize={"xl"}>{title}</Heading>
+          <Text my={3} noOfLines={1} color={"gray.400"} fontSize={"sm"}>{summary}</Text>
+          <HStack color={"gray.400"} align="center" fontSize={"sm"}>
             <Icon as={ViewIcon} />
             <Text>290</Text>
             <Icon as={TriangleUpIcon} />

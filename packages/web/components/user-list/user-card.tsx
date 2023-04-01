@@ -24,7 +24,7 @@ const UserCard: React.FC<IUser> = ({
         alt={name}
       />
       <Stack marginLeft={3} spacing={1}>
-        <Heading as="h5" noOfLines={1} size='md' fontSize={"lg"}>{name}</Heading>
+        <Heading as="h5" noOfLines={1} size='md' fontSize={"md"}>{name}</Heading>
         <Text noOfLines={1} fontSize='sm' color="gray.400">用一句话描述自己</Text>
       </Stack>
       <Spacer />
