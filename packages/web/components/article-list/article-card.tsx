@@ -1,6 +1,6 @@
 import { ChatIcon, TriangleUpIcon, ViewIcon } from "@chakra-ui/icons";
 import { Link } from "@chakra-ui/next-js";
-import { Box, Card, CardBody, Center, Divider, Heading, HStack, Icon, Text } from "@chakra-ui/react"
+import { Box, Card, CardBody, Center, Divider, Heading, HStack, Icon, Text, useColorModeValue } from "@chakra-ui/react"
 import Image from "next/image"
 import { IUser } from "../user-list/user-card";
 
@@ -17,6 +17,9 @@ export interface IArticle {
 const ArticleCard: React.FC<IArticle> = ({
   id, title, summary, coverImage, user, createdAt
 }) => {
+  const bg = useColorModeValue('gray.50', 'gray.800')
+  const hoverBg = useColorModeValue('gray.100', 'gray.700')
+
   return (
     <Link href={"/article/" + id}>
       <Card
@@ -24,9 +27,11 @@ const ArticleCard: React.FC<IArticle> = ({
         boxShadow={"none"}
         transition="all 0.3s"
         _hover={{
-          bg: 'gray.100'
+          bg: hoverBg
         }}
-        py={1}
+        py={2}
+        px={1}
+        bg={bg}
         direction={{ base: 'column', sm: 'row' }}
       >
         <CardBody p="2">

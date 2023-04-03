@@ -1,20 +1,22 @@
 /* eslint-disable react/no-children-prop */
 import { EditIcon, SearchIcon } from "@chakra-ui/icons"
 import { Link } from "@chakra-ui/next-js"
-import { Button, Flex, HStack, Input, InputGroup, InputLeftElement, Spacer } from "@chakra-ui/react"
+import { Button, Flex, HStack, Input, InputGroup, InputLeftElement, Spacer, useColorModeValue } from "@chakra-ui/react"
 import Image from "next/image"
 import { useSelectedLayoutSegment } from 'next/navigation';
+import ToggleColorMode from "../toggle-color-mode";
 
 const Header = () => {
   const segment = useSelectedLayoutSegment();
+  const bg = useColorModeValue('gray.50', 'gray.800')
 
   return (
     <Flex
-      hidden={segment === "editor"}
+      hidden={segment === "editor" || segment === "login"}
       py="2"
       px="2"
       gap='2'
-      bg="gray.50" 
+      bg={bg}
       as="header" 
       boxShadow={"base"} 
       position="sticky" 
@@ -44,7 +46,8 @@ const Header = () => {
       <Spacer />
       <HStack>
         <Link href="/editor"><Button colorScheme="twitter" leftIcon={<EditIcon />}>写文章</Button></Link>
-        <Button colorScheme="twitter" variant="ghost">登录</Button>
+        <Link href="/login"><Button colorScheme="twitter" variant="outline">登录</Button></Link>
+        <ToggleColorMode />
       </HStack>
     </Flex>
   )

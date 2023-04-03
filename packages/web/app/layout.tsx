@@ -5,7 +5,7 @@ import '@fontsource/noto-sans-sc/400.css'
 import Header from '@/components/header/header'
 import theme from '@/theme'
 import { CacheProvider } from '@chakra-ui/next-js'
-import { ChakraProvider } from '@chakra-ui/react'
+import { ChakraProvider, localStorageManager } from '@chakra-ui/react'
 import './globals.css'
 
 export default function RootLayout({
@@ -13,12 +13,11 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
-
   return (
     <html lang="zh-CN">
       <body>
         <CacheProvider>
-          <ChakraProvider theme={theme}>
+          <ChakraProvider theme={theme} colorModeManager={localStorageManager}>
             <Header />
             {children}
           </ChakraProvider>

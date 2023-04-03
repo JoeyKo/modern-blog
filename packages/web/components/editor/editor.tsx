@@ -1,8 +1,3 @@
-import { AutoFocusPlugin } from "@lexical/react/LexicalAutoFocusPlugin";
-import { LinkPlugin } from "@lexical/react/LexicalLinkPlugin";
-import { ListPlugin } from "@lexical/react/LexicalListPlugin";
-import { MarkdownShortcutPlugin } from "@lexical/react/LexicalMarkdownShortcutPlugin";
-import { TRANSFORMERS } from "@lexical/markdown";
 import { LexicalComposer } from '@lexical/react/LexicalComposer';
 import { ContentEditable } from '@lexical/react/LexicalContentEditable';
 import LexicalErrorBoundary from '@lexical/react/LexicalErrorBoundary';
@@ -12,24 +7,39 @@ import { ListItemNode, ListNode } from "@lexical/list";
 import { CodeHighlightNode, CodeNode } from "@lexical/code";
 import { AutoLinkNode, LinkNode } from "@lexical/link";
 import { RichTextPlugin } from "@lexical/react/LexicalRichTextPlugin";
+import { OnChangePlugin } from '@lexical/react/LexicalOnChangePlugin';
+import { HistoryPlugin } from '@lexical/react/LexicalHistoryPlugin';
+import { $getRoot, $getSelection, EditorState } from 'lexical';
+import { MarkdownShortcutPlugin } from "@lexical/react/LexicalMarkdownShortcutPlugin";
+import { TRANSFORMERS } from "@lexical/markdown";
+
 import ToolbarPlugin from "./plugins/ToolbarPlugin";
-import ActionsPlugin from "./plugins/ActionsPlugin";
+import { Box, Text } from '@chakra-ui/react';
 
 import theme from './themes/theme';
-
-import './styles.css'
+import styles from './index.module.css';
 
 function onError(err: Error) {
   console.log(err)
 }
 
+function onChange(state: EditorState) {
+  state.read(() => {
+    const root = $getRoot();
+    const selection = $getSelection();
+
+    console.log(selection);
+  });
+}
+
 function Placeholder() {
   return (
-    <div className="editor-placeholder">
-      Play around with the Markdown plugin...
-    </div>
+    <Text top={0} py={2} pointerEvents={"none"} userSelect={"none"} color={"gray.500"} position={"absolute"}>
+      请输入你的文章内容
+    </Text>
   );
 }
+
 const ArticleEditor = () => {
   const editorConfig = {
     namespace: 'ArticleEditor',
@@ -52,20 +62,17 @@ const ArticleEditor = () => {
 
   return (
     <LexicalComposer initialConfig={editorConfig}>
-      <div className="editor-container">
-        <ToolbarPlugin />
-        <div className="editor-inner">
-          <RichTextPlugin
-            contentEditable={<ContentEditable className="editor-input" />}
-            placeholder={<Placeholder />} ErrorBoundary={LexicalErrorBoundary}
-          />
-          <AutoFocusPlugin />
-          <ListPlugin />
-          <LinkPlugin />
-          <MarkdownShortcutPlugin transformers={TRANSFORMERS} />
-        </div>
-        <ActionsPlugin />
-      </div>
+      <ToolbarPlugin />
+      <Box position={"relative"}>
+        <RichTextPlugin
+          contentEditable={<ContentEditable className={styles.editorInput} />}
+          placeholder={<Placeholder />}
+          ErrorBoundary={LexicalErrorBoundary}
+        />
+      </Box>
+      <OnChangePlugin onChange={onChange} />
+      <HistoryPlugin />
+      <MarkdownShortcutPlugin transformers={TRANSFORMERS} />
     </LexicalComposer>
   )
 }
