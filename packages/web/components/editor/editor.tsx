@@ -7,17 +7,18 @@ import { ListItemNode, ListNode } from "@lexical/list";
 import { CodeHighlightNode, CodeNode } from "@lexical/code";
 import { AutoLinkNode, LinkNode } from "@lexical/link";
 import { RichTextPlugin } from "@lexical/react/LexicalRichTextPlugin";
+import { ListPlugin } from "@lexical/react/LexicalListPlugin";
 import { OnChangePlugin } from '@lexical/react/LexicalOnChangePlugin';
 import { HistoryPlugin } from '@lexical/react/LexicalHistoryPlugin';
 import { $getRoot, $getSelection, EditorState } from 'lexical';
-import { MarkdownShortcutPlugin } from "@lexical/react/LexicalMarkdownShortcutPlugin";
-import { TRANSFORMERS } from "@lexical/markdown";
 
 import ToolbarPlugin from "./plugins/ToolbarPlugin";
 import { Box, Text } from '@chakra-ui/react';
 
 import theme from './themes/theme';
 import styles from './index.module.css';
+import { ImageNode } from './nodes/ImageNode';
+import ImagePlugin from './plugins/ImagePlugin';
 
 function onError(err: Error) {
   console.log(err)
@@ -55,7 +56,8 @@ const ArticleEditor = () => {
       TableCellNode,
       TableRowNode,
       AutoLinkNode,
-      LinkNode
+      LinkNode,
+      ImageNode
     ],
     onError,
   };
@@ -71,8 +73,9 @@ const ArticleEditor = () => {
         />
       </Box>
       <OnChangePlugin onChange={onChange} />
+      <ListPlugin />
+      <ImagePlugin />
       <HistoryPlugin />
-      <MarkdownShortcutPlugin transformers={TRANSFORMERS} />
     </LexicalComposer>
   )
 }
