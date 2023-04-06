@@ -1,14 +1,18 @@
 .ContentEditable__root {
-  min-height: 80vh;
-  outline: none;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  padding-top: var(--chakra-space-2);
-  padding-bottom: var(--chakra-space-2);
+  min-height: calc(100vh - 110px);
+  border: 0;
+  outline: 0;
+  display: block;
+  position: relative;
+  overflow: auto;
+  padding: var(--chakra-space-2);
+  tab-size: 1;
+  line-height: 1.7;
+  font-size: 15px;
 }
 
 .editor-heading-h1 {
-  font-size: var(--chakra-fontSizes-4xl);
+  font-size: var(--chakra-fontSizes-3xl);
 }
 
 .editor-heading-h2 {
@@ -16,16 +20,16 @@
 }
 
 .editor-heading-h3 {
-  font-size: var(--chakra-fontSizes-2xl);
+  font-size: var(--chakra-fontSizes-xl);
 }
 
 .editor-quote {
-  margin-left: var(--chakra-space-2);
   color: var(--chakra-colors-gray-500);
   border-left-color: var(--chakra-colors-gray-300);
   border-left-width: var(--chakra-space-1);
   border-left-style: solid;
-  padding-left: var(--chakra-space-4);
+  padding-left: var(--chakra-space-3);
+  margin: var(--chakra-space-1) var(--chakra-space-4);
 }
 
 .editor-text-bold {
@@ -48,20 +52,27 @@
   text-decoration: underline line-through;
 }
 
+.editor-text-code {
+  background-color: var(--chakra-colors-gray-100);
+  padding: 1px 0.25rem;
+  font-family: Menlo, Consolas, Monaco, monospace;
+  font-size: 94%;
+}
+
 .editor-ol {
   padding: 0;
   margin: 0;
-  margin-left: var(--chakra-space-2);
+  margin: 0 var(--chakra-space-5);
 }
 
 .editor-ul {
   padding: 0;
   margin: 0;
-  margin-left: var(--chakra-space-2);
+  margin: 0 var(--chakra-space-5);
 }
 
 .editor-list-item {
-  margin: var(--chakra-space-2) var(--chakra-space-5);
+  margin: 0 var(--chakra-space-6);
 }
 
 .editor-nested-list-item {
@@ -69,17 +80,14 @@
 }
 
 .editor-code {
-  background-color: rgb(240, 242, 245);
-  font-family: Menlo, Consolas, Monaco, monospace;
+  background-color: #f0f2f5;
+  font-family: Menlo,Consolas,Monaco,monospace;
   display: block;
   padding: 8px 8px 8px 52px;
   line-height: 1.53;
   font-size: 13px;
-  margin: 0;
-  margin-top: 8px;
-  margin-bottom: 8px;
+  margin: 8px 0;
   tab-size: 2;
-  /* white-space: pre; */
   overflow-x: auto;
   position: relative;
 }

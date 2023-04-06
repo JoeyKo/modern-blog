@@ -11,6 +11,7 @@ const theme = {
     underline: "editor-text-underline",
     strikethrough: "editor-text-strikethrough",
     underlineStrikethrough: "editor-text-underline-strikethrough",
+    code: "editor-text-code"
   },
   list: {
     nested: {

@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, HStack, IconButton, Menu, MenuButton, MenuItem, MenuList } from "@chakra-ui/react";
+import { Button, HStack, IconButton, Menu, MenuButton, MenuItem, MenuList, Portal } from "@chakra-ui/react";
 import {
   FaAlignCenter, FaAlignJustify, FaAlignLeft, FaAlignRight, FaBold,
   FaCode,
@@ -82,6 +82,7 @@ const ToolbarPlugin = () => {
   const [isItalic, setIsItalic] = React.useState(false);
   const [isStrikethrough, setIsStrikethrough] = React.useState(false);
   const [isUnderline, setIsUnderline] = React.useState(false);
+  const [isCode, setIsCode] = React.useState(false);
   const [codeLanguage, setCodeLanguage] = React.useState("");
   const [blockType, setBlockType] = React.useState<keyof typeof blockTypeToBlockName>(
     "paragraph"
@@ -143,6 +144,7 @@ const ToolbarPlugin = () => {
       setIsItalic(selection.hasFormat('italic'));
       setIsStrikethrough(selection.hasFormat('strikethrough'));
       setIsUnderline(selection.hasFormat('underline'));
+      setIsCode(selection.hasFormat('code'))
     }
   }, [editor]);
 
@@ -181,7 +183,7 @@ const ToolbarPlugin = () => {
   }, [updateToolbar, editor]);
 
   return (
-    <HStack>
+    <HStack px={2} py={1} overflow={"auto"} position={"sticky"} bg={"gray.100"} borderRadius={"md"} top={0} zIndex={10}>
       <IconButton
         size={"sm"}
         onClick={() => editor.dispatchCommand(UNDO_COMMAND, undefined)}
@@ -234,15 +236,13 @@ const ToolbarPlugin = () => {
             icon={<FaUnderline />}
             aria-label={"下划线"}
           />
-          <label>
-            <input multiple style={{ display: 'none' }} type="file" ref={assetFileUploadRef} onChange={onFilesChange} />
-            <IconButton
-              size={"sm"}
-              onClick={openUpload}
-              icon={<FaImage />}
-              aria-label={"图片"}
-            />
-          </label>
+          <IconButton
+            size={"sm"}
+            onClick={() => editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'code')}
+            colorScheme={isCode ? "twitter" : undefined}
+            icon={<FaCode />}
+            aria-label={"代码"}
+          />
           <IconButton
             size={"sm"}
             onClick={() => editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, 'left')}
@@ -267,6 +267,15 @@ const ToolbarPlugin = () => {
             icon={<FaAlignJustify />}
             aria-label={"两端对齐"}
           />
+          <label>
+            <input multiple style={{ display: 'none' }} type="file" ref={assetFileUploadRef} onChange={onFilesChange} />
+            <IconButton
+              size={"sm"}
+              onClick={openUpload}
+              icon={<FaImage />}
+              aria-label={"图片"}
+            />
+          </label>
         </>
       )}
     </HStack>
@@ -341,16 +350,18 @@ const BlockOptionsDropdownList = ({
       <MenuButton as={Button} size="sm" rightIcon={<ChevronDownIcon />}>
         {blockTypeToBlockName[blockType]}
       </MenuButton>
-      <MenuList>
-        <MenuItem icon={<FaParagraph />} onClick={() => formatList('paragraph')}>{blockTypeToBlockName['paragraph']}</MenuItem>
-        <MenuItem icon={<FaHeading />} onClick={() => formatList('h1')}>{blockTypeToBlockName['h1']}</MenuItem>
-        <MenuItem icon={<FaHeading />} onClick={() => formatList('h2')}>{blockTypeToBlockName['h2']}</MenuItem>
-        <MenuItem icon={<FaHeading />} onClick={() => formatList('h3')}>{blockTypeToBlockName['h3']}</MenuItem>
-        <MenuItem icon={<FaQuoteLeft />} onClick={() => formatList('quote')}>{blockTypeToBlockName['quote']}</MenuItem>
-        <MenuItem icon={<FaListUl />} onClick={() => formatList('ul')}>{blockTypeToBlockName['ul']}</MenuItem>
-        <MenuItem icon={<FaListOl />} onClick={() => formatList('ol')}>{blockTypeToBlockName['ol']}</MenuItem>
-        <MenuItem icon={<FaCode />} onClick={() => formatList('code')}>{blockTypeToBlockName['code']}</MenuItem>
-      </MenuList>
+      <Portal>
+        <MenuList>
+          <MenuItem icon={<FaParagraph />} onClick={() => formatList('paragraph')}>{blockTypeToBlockName['paragraph']}</MenuItem>
+          <MenuItem icon={<FaHeading />} onClick={() => formatList('h1')}>{blockTypeToBlockName['h1']}</MenuItem>
+          <MenuItem icon={<FaHeading />} onClick={() => formatList('h2')}>{blockTypeToBlockName['h2']}</MenuItem>
+          <MenuItem icon={<FaHeading />} onClick={() => formatList('h3')}>{blockTypeToBlockName['h3']}</MenuItem>
+          <MenuItem icon={<FaQuoteLeft />} onClick={() => formatList('quote')}>{blockTypeToBlockName['quote']}</MenuItem>
+          <MenuItem icon={<FaListUl />} onClick={() => formatList('ul')}>{blockTypeToBlockName['ul']}</MenuItem>
+          <MenuItem icon={<FaListOl />} onClick={() => formatList('ol')}>{blockTypeToBlockName['ol']}</MenuItem>
+          <MenuItem icon={<FaCode />} onClick={() => formatList('code')}>{blockTypeToBlockName['code']}</MenuItem>
+        </MenuList>
+      </Portal>
     </Menu>
   )
 }

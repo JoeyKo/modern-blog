@@ -15,7 +15,7 @@ import { HistoryPlugin } from '@lexical/react/LexicalHistoryPlugin';
 import { $getRoot, $getSelection, EditorState } from 'lexical';
 
 import ToolbarPlugin from "./plugins/ToolbarPlugin";
-import { Box, Text } from '@chakra-ui/react';
+import { Box, Container, Text } from '@chakra-ui/react';
 
 import theme from './themes/theme';
 import { ImageNode } from './nodes/ImageNode';
@@ -36,7 +36,7 @@ function onChange(state: EditorState) {
 
 function Placeholder() {
   return (
-    <Text top={0} py={2} pointerEvents={"none"} userSelect={"none"} color={"gray.500"} position={"absolute"}>
+    <Text top={0} p={2} pointerEvents={"none"} userSelect={"none"} color={"gray.500"} position={"absolute"}>
       请输入你的文章内容
     </Text>
   );
@@ -65,18 +65,20 @@ const ArticleEditor = () => {
 
   return (
     <LexicalComposer initialConfig={editorConfig}>
-      <ToolbarPlugin />
-      <Box position={"relative"}>
-        <RichTextPlugin
-          contentEditable={<ContentEditable className={"ContentEditable__root"} />}
-          placeholder={<Placeholder />}
-          ErrorBoundary={LexicalErrorBoundary}
-        />
-      </Box>
-      <OnChangePlugin onChange={onChange} />
-      <ListPlugin />
-      <ImagePlugin />
-      <HistoryPlugin />
+      <Container maxW={"container.lg"}>
+        <ToolbarPlugin />
+        <Box position={"relative"}>
+          <RichTextPlugin
+            contentEditable={<ContentEditable className={"ContentEditable__root"} />}
+            placeholder={<Placeholder />}
+            ErrorBoundary={LexicalErrorBoundary}
+          />
+        </Box>
+        <OnChangePlugin onChange={onChange} />
+        <ListPlugin />
+        <ImagePlugin />
+        <HistoryPlugin />
+      </Container>
     </LexicalComposer>
   )
 }
