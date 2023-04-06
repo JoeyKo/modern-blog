@@ -4,8 +4,8 @@
   margin: 0;
 }
 
-a, a.chakra-link:hover {
+a,
+a.chakra-link:hover {
   color: inherit;
   text-decoration: none;
 }
-

@@ -20,6 +20,7 @@ import {
   CAN_REDO_COMMAND,
   $createTextNode,
   $createParagraphNode,
+  COMMAND_PRIORITY_LOW,
 } from 'lexical';
 import {
   $setBlocksType,
@@ -51,8 +52,6 @@ import {
 import { ChevronDownIcon } from "@chakra-ui/icons";
 import { INSERT_IMAGE_COMMAND } from "./ImagePlugin";
 
-const LowPriority = 1;
-
 const supportedBlockTypes = new Set([
   "paragraph",
   "h1",
@@ -65,7 +64,7 @@ const supportedBlockTypes = new Set([
 ]);
 
 const blockTypeToBlockName = {
-  paragraph: "正常",
+  paragraph: "常规",
   h1: "H1标题",
   h2: "H2标题",
   h3: "H3标题",
@@ -87,6 +86,30 @@ const ToolbarPlugin = () => {
   const [blockType, setBlockType] = React.useState<keyof typeof blockTypeToBlockName>(
     "paragraph"
   );
+  const assetFileUploadRef = React.useRef<HTMLInputElement>(null);
+
+  function openUpload() {
+    assetFileUploadRef.current?.click();
+  }
+
+  function onFilesChange(e: any) {
+    const files = e.target.files;
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      if (typeof reader.result === 'string') {
+        editor.dispatchCommand(INSERT_IMAGE_COMMAND, {
+          altText: files[0].name,
+          captionsEnabled: false,
+          src:
+            reader.result
+        })
+      }
+    };
+    if (files !== null) {
+      reader.readAsDataURL(files[0]);
+    }
+  }
 
   const updateToolbar = React.useCallback(() => {
     const selection = $getSelection();
@@ -101,7 +124,6 @@ const ToolbarPlugin = () => {
       const elementDOM = editor.getElementByKey(elementKey);
 
       if (elementDOM !== null) {
-        console.log(elementKey);
         if ($isListNode(element)) {
           const parentList = $getNearestNodeOfType(anchorNode, ListNode);
           const type = parentList ? parentList.getTag() : element.getTag();
@@ -137,7 +159,7 @@ const ToolbarPlugin = () => {
           updateToolbar();
           return false;
         },
-        LowPriority
+        COMMAND_PRIORITY_LOW
       ),
       editor.registerCommand(
         CAN_UNDO_COMMAND,
@@ -145,7 +167,7 @@ const ToolbarPlugin = () => {
           setCanUndo(payload);
           return false;
         },
-        LowPriority
+        COMMAND_PRIORITY_LOW
       ),
       editor.registerCommand(
         CAN_REDO_COMMAND,
@@ -153,31 +175,10 @@ const ToolbarPlugin = () => {
           setCanRedo(payload);
           return false;
         },
-        LowPriority
-      )
+        COMMAND_PRIORITY_LOW
+      ),
     );
   }, [updateToolbar, editor]);
-
-  const handleMarkdownToggle = React.useCallback(() => {
-    editor.update(() => {
-      const root = $getRoot();
-      const firstChild = root.getFirstChild();
-      if ($isCodeNode(firstChild) && firstChild.getLanguage() === "markdown") {
-        $convertFromMarkdownString(
-          firstChild.getTextContent(),
-          TRANSFORMERS
-        );
-      } else {
-        const markdown = $convertToMarkdownString(TRANSFORMERS);
-        root
-          .clear()
-          .append(
-            $createCodeNode("markdown").append($createTextNode(markdown))
-          );
-      }
-      root.selectEnd();
-    });
-  }, [editor]);
 
   return (
     <HStack>
@@ -233,16 +234,15 @@ const ToolbarPlugin = () => {
             icon={<FaUnderline />}
             aria-label={"下划线"}
           />
-          <IconButton
-            size={"sm"}
-            onClick={() => editor.dispatchCommand(INSERT_IMAGE_COMMAND, {
-              altText: "Pink flowers",
-              src:
-                "https://images.pexels.com/photos/5656637/pexels-photo-5656637.jpeg?auto=compress&cs=tinysrgb&w=200"
-            })}
-            icon={<FaImage />}
-            aria-label={"图片"}
-          />
+          <label>
+            <input multiple style={{ display: 'none' }} type="file" ref={assetFileUploadRef} onChange={onFilesChange} />
+            <IconButton
+              size={"sm"}
+              onClick={openUpload}
+              icon={<FaImage />}
+              aria-label={"图片"}
+            />
+          </label>
           <IconButton
             size={"sm"}
             onClick={() => editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, 'left')}
@@ -281,7 +281,6 @@ const BlockOptionsDropdownList = ({
   blockType: keyof typeof blockTypeToBlockName,
 }) => {
   const formatList = (listType: string) => {
-    console.log(blockType);
     if (listType === "paragraph" && blockType !== "paragraph") {
       editor.update(() => {
         const selection = $getSelection();

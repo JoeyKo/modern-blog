@@ -1,3 +1,5 @@
+import './index.css';
+
 import { LexicalComposer } from '@lexical/react/LexicalComposer';
 import { ContentEditable } from '@lexical/react/LexicalContentEditable';
 import LexicalErrorBoundary from '@lexical/react/LexicalErrorBoundary';
@@ -16,7 +18,6 @@ import ToolbarPlugin from "./plugins/ToolbarPlugin";
 import { Box, Text } from '@chakra-ui/react';
 
 import theme from './themes/theme';
-import styles from './index.module.css';
 import { ImageNode } from './nodes/ImageNode';
 import ImagePlugin from './plugins/ImagePlugin';
 
@@ -67,7 +68,7 @@ const ArticleEditor = () => {
       <ToolbarPlugin />
       <Box position={"relative"}>
         <RichTextPlugin
-          contentEditable={<ContentEditable className={styles.editorInput} />}
+          contentEditable={<ContentEditable className={"ContentEditable__root"} />}
           placeholder={<Placeholder />}
           ErrorBoundary={LexicalErrorBoundary}
         />
