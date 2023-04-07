@@ -110,55 +110,60 @@ export default function ColorPicker({
   return (
     <DropDown
       {...rest}
-      stopCloseOnClickSelf={stopCloseOnClickSelf}>
+      stopCloseOnClickSelf={stopCloseOnClickSelf}
+    >
       <Box
-        className="color-picker-wrapper"
-        style={{ width: WIDTH }}
+        p={4}
         bg={bg}
-        ref={innerDivRef}
+        borderRadius={4}
       >
-        <HStack mb={3}>
-          <Text as="span" fontSize={"sm"}>Hex</Text>
-          <Input size="sm" onChange={e => onSetHex(e.target.value)} value={inputColor} />
-        </HStack>
-        <Box className="color-picker-basic-color">
-          {basicColors.map((basicColor) => (
-            <button
-              className={basicColor === selfColor.hex ? ' active' : ''}
-              key={basicColor}
-              style={{ backgroundColor: basicColor }}
-              onClick={() => {
-                setInputColor(basicColor);
-                setSelfColor(transformColor('hex', basicColor));
+        <Box
+          w={WIDTH}
+          ref={innerDivRef}
+        >
+          <HStack mb={3}>
+            <Text as="span" fontSize={"sm"}>Hex</Text>
+            <Input size="sm" onChange={e => onSetHex(e.target.value)} value={inputColor} />
+          </HStack>
+          <Box className="color-picker-basic-color">
+            {basicColors.map((basicColor) => (
+              <button
+                className={basicColor === selfColor.hex ? ' active' : ''}
+                key={basicColor}
+                style={{ backgroundColor: basicColor }}
+                onClick={() => {
+                  setInputColor(basicColor);
+                  setSelfColor(transformColor('hex', basicColor));
+                }}
+              />
+            ))}
+          </Box>
+          <MoveWrapper
+            className="color-picker-saturation"
+            style={{ backgroundColor: `hsl(${selfColor.hsv.h}, 100%, 50%)` }}
+            onChange={onMoveSaturation}
+          >
+            <Box
+              className="color-picker-saturation_cursor"
+              style={{
+                backgroundColor: selfColor.hex,
+                left: saturationPosition.x,
+                top: saturationPosition.y,
               }}
             />
-          ))}
+          </MoveWrapper>
+          <MoveWrapper className="color-picker-hue" onChange={onMoveHue}>
+            <Box
+              className="color-picker-hue_cursor"
+              style={{
+                backgroundColor: `hsl(${selfColor.hsv.h}, 100%, 50%)`,
+                left: huePosition.x,
+              }}
+            />
+          </MoveWrapper>
         </Box>
-        <MoveWrapper
-          className="color-picker-saturation"
-          style={{ backgroundColor: `hsl(${selfColor.hsv.h}, 100%, 50%)` }}
-          onChange={onMoveSaturation}
-        >
-          <Box
-            className="color-picker-saturation_cursor"
-            style={{
-              backgroundColor: selfColor.hex,
-              left: saturationPosition.x,
-              top: saturationPosition.y,
-            }}
-          />
-        </MoveWrapper>
-        <MoveWrapper className="color-picker-hue" onChange={onMoveHue}>
-          <Box
-            className="color-picker-hue_cursor"
-            style={{
-              backgroundColor: `hsl(${selfColor.hsv.h}, 100%, 50%)`,
-              left: huePosition.x,
-            }}
-          />
-        </MoveWrapper>
+        {children}
       </Box>
-      {children}
     </DropDown>
   );
 }

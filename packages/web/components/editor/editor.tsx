@@ -5,7 +5,6 @@ import { ContentEditable } from '@lexical/react/LexicalContentEditable';
 import LexicalErrorBoundary from '@lexical/react/LexicalErrorBoundary';
 import { AutoFocusPlugin } from '@lexical/react/LexicalAutoFocusPlugin';
 import { HeadingNode, QuoteNode } from "@lexical/rich-text";
-import { TableCellNode, TableNode, TableRowNode } from "@lexical/table";
 import { ListItemNode, ListNode } from "@lexical/list";
 import { CodeHighlightNode, CodeNode } from "@lexical/code";
 import { AutoLinkNode, LinkNode } from "@lexical/link";
@@ -13,32 +12,25 @@ import { RichTextPlugin } from "@lexical/react/LexicalRichTextPlugin";
 import { ListPlugin } from "@lexical/react/LexicalListPlugin";
 import { OnChangePlugin } from '@lexical/react/LexicalOnChangePlugin';
 import { HistoryPlugin } from '@lexical/react/LexicalHistoryPlugin';
-import { $getRoot, $getSelection, EditorState } from 'lexical';
-
-import ToolbarPlugin from "./plugins/ToolbarPlugin";
-import { Box, Container, Text } from '@chakra-ui/react';
-
-import theme from './themes/theme';
-import { ImageNode } from './nodes/ImageNode';
-import ImagePlugin from './plugins/ImagePlugin';
+import { EditorState } from 'lexical';
 import { useEffect, useState } from 'react';
+import { Box, Container, Text } from '@chakra-ui/react';
+import { ImageNode } from './nodes/ImageNode';
+import ToolbarPlugin from "./plugins/ToolbarPlugin";
+import ImagePlugin from './plugins/ImagePlugin';
 import FloatingLinkEditorPlugin from './plugins/FloatingLinkEditorPlugin';
-import { CAN_USE_DOM } from '@/shared/canUseDOM';
 import LinkPlugin from './plugins/LinkPlugin';
 import ClickableLinkPlugin from './plugins/ClickableLinkPlugin';
 import CodeHighlightPlugin from './plugins/CodeHighlightPlugin';
+import theme from './themes/theme';
+import { CAN_USE_DOM } from '@/shared/canUseDOM';
 
 function onError(err: Error) {
   console.log(err)
 }
 
 function onChange(state: EditorState) {
-  state.read(() => {
-    const root = $getRoot();
-    const selection = $getSelection();
-
-    console.log(selection);
-  });
+  console.log(JSON.stringify(state))
 }
 
 function Placeholder() {

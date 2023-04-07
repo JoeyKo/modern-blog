@@ -8,7 +8,7 @@ import {
 } from 'react';
 import * as React from 'react';
 import { createPortal } from 'react-dom';
-import { HStack, Icon, IconButton, IconButtonProps } from '@chakra-ui/react';
+import { HStack, Icon, IconButton, IconButtonProps, Tooltip } from '@chakra-ui/react';
 import { BiChevronDown } from 'react-icons/bi'
 
 type DropDownContextType = {
@@ -190,13 +190,15 @@ export default function DropDown({
 
   return (
     <>
-      <IconButton
-        size="sm"
-        ref={buttonRef}
-        onClick={() => setShowDropDown(!showDropDown)}
-        icon={icon}
-        aria-label={label}
-      />
+      <Tooltip label={label}>
+        <IconButton
+          size="sm"
+          ref={buttonRef}
+          onClick={() => setShowDropDown(!showDropDown)}
+          icon={icon}
+          aria-label={label}
+        />
+      </Tooltip>
       {showDropDown &&
         createPortal(
           <DropDownItems dropDownRef={dropDownRef} onClose={handleClose}>

@@ -142,7 +142,7 @@ const ToolbarPlugin = () => {
     "paragraph"
   );
   const assetFileUploadRef = React.useRef<HTMLInputElement>(null);
-  
+
   const bg = useColorModeValue('white', 'gray.800');
 
   function openUpload() {
@@ -380,6 +380,18 @@ const ToolbarPlugin = () => {
             value={fontSize}
             editor={editor}
           />
+          <ColorPicker
+            icon={<MdFormatColorText />}
+            label="颜色"
+            color={fontColor}
+            onChange={onFontColorSelect}
+          />
+          <ColorPicker
+            icon={<IoMdColorFill />}
+            label="背景"
+            color={bgColor}
+            onChange={onBgColorSelect}
+          />
           <Tooltip label='加粗'>
             <IconButton
               size={"sm"}
@@ -425,18 +437,6 @@ const ToolbarPlugin = () => {
               aria-label={"代码"}
             />
           </Tooltip>
-          <ColorPicker
-            icon={<MdFormatColorText />}
-            label="颜色"
-            color={fontColor}
-            onChange={onFontColorSelect}
-          />
-          <ColorPicker
-            icon={<IoMdColorFill />}
-            label="背景"
-            color={bgColor}
-            onChange={onBgColorSelect}
-          />
           <Tooltip label='插入链接'>
             <IconButton
               size={"sm"}
