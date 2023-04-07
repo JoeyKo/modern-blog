@@ -2,7 +2,7 @@ import './ColorPicker.css';
 
 import { ReactNode, useEffect, useMemo, useRef, useState } from 'react';
 import * as React from 'react';
-import { Box, HStack, Input, Text, useDisclosure } from '@chakra-ui/react';
+import { Box, HStack, Input, Text, useColorModeValue } from '@chakra-ui/react';
 import DropDown from './DropDown';
 
 interface ColorPickerProps {
@@ -47,6 +47,8 @@ export default function ColorPicker({
   const [selfColor, setSelfColor] = useState(transformColor('hex', color));
   const [inputColor, setInputColor] = useState(color);
   const innerDivRef = useRef(null);
+
+  const bg = useColorModeValue('gray.50', 'gray.700');
 
   const saturationPosition = useMemo(
     () => ({
@@ -112,6 +114,7 @@ export default function ColorPicker({
       <Box
         className="color-picker-wrapper"
         style={{ width: WIDTH }}
+        bg={bg}
         ref={innerDivRef}
       >
         <HStack mb={3}>
@@ -154,10 +157,6 @@ export default function ColorPicker({
             }}
           />
         </MoveWrapper>
-        {/* <Box
-                className="color-picker-color"
-                style={{ backgroundColor: selfColor.hex }}
-              /> */}
       </Box>
       {children}
     </DropDown>

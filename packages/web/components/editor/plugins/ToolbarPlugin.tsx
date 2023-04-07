@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, HStack, IconButton, Menu, MenuButton, MenuItem, MenuList, Portal, Tooltip } from "@chakra-ui/react";
+import { Button, HStack, IconButton, Menu, MenuButton, MenuItem, MenuList, Portal, Tooltip, useColorModeValue } from "@chakra-ui/react";
 import {
   FaAlignCenter, FaAlignJustify, FaAlignLeft, FaAlignRight, FaBold,
   FaCode,
@@ -142,6 +142,8 @@ const ToolbarPlugin = () => {
     "paragraph"
   );
   const assetFileUploadRef = React.useRef<HTMLInputElement>(null);
+  
+  const bg = useColorModeValue('white', 'gray.800');
 
   function openUpload() {
     assetFileUploadRef.current?.click();
@@ -322,7 +324,7 @@ const ToolbarPlugin = () => {
       py={1}
       overflow={"auto"}
       position={"sticky"}
-      bg={"white"}
+      bg={bg}
       borderRadius={"md"}
       top={0}
       zIndex={10}

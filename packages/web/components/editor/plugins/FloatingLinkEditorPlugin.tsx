@@ -21,7 +21,7 @@ import { createPortal } from 'react-dom';
 import { getSelectedNode } from '../utils/getSelectedNode';
 import { setFloatingElemPositionForLinkEditor } from '../utils/setFloatingElemPositionForLinkEditor';
 import { sanitizeUrl } from '../utils/url';
-import { Box, Flex, HStack, IconButton, Input, Spacer } from '@chakra-ui/react';
+import { Box, Flex, HStack, IconButton, Input, Spacer, useColorModeValue } from '@chakra-ui/react';
 import { MdCheck, MdClose, MdDelete, MdEdit } from 'react-icons/md';
 
 function FloatingLinkEditor({
@@ -43,6 +43,8 @@ function FloatingLinkEditor({
   const [lastSelection, setLastSelection] = useState<
     RangeSelection | GridSelection | NodeSelection | null
   >(null);
+
+  const bg = useColorModeValue('gray.50', 'gray.700');
 
   const updateLinkEditor = useCallback(() => {
     const selection = $getSelection();
@@ -183,7 +185,7 @@ function FloatingLinkEditor({
   return (
     <Box
       ref={editorRef}
-      bg={"gray.50"}
+      bg={bg}
       pos="absolute"
       top={0}
       left={0}

@@ -116,6 +116,20 @@
   color: rgba(0, 0, 0, 0.5);
 }
 
+:root[data-theme=dark] .editor-code {
+  background-color: var(--chakra-colors-gray-900);
+}
+
+:root[data-theme=dark] .editor-code:before {
+  color: var(--chakra-colors-gray-500);
+  background-color: var(--chakra-colors-gray-900);
+  border-right: 1px solid var(--chakra-colors-gray-700);
+}
+
+:root[data-theme=dark] .editor-code:after {
+  color: var(--chakra-colors-gray-500);
+}
+
 .editor-tokenComment {
   color: slategray;
 }
