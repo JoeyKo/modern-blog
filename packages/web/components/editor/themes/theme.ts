@@ -22,7 +22,8 @@ const theme = {
     listitem: "editor-list-item",
   },
   code: "editor-code",
-  image: "editor-image"
+  image: "editor-image",
+  link: "editor-link"
 };
 
 export default theme;

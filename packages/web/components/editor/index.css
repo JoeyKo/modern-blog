@@ -55,7 +55,6 @@
 .editor-text-code {
   background-color: var(--chakra-colors-gray-100);
   padding: 1px 0.25rem;
-  font-family: Menlo, Consolas, Monaco, monospace;
   font-size: 94%;
 }
 
@@ -81,7 +80,7 @@
 
 .editor-code {
   background-color: #f0f2f5;
-  font-family: Menlo,Consolas,Monaco,monospace;
+  font-family: Menlo, Consolas, Monaco, monospace;
   display: block;
   padding: 8px 8px 8px 52px;
   line-height: 1.53;
@@ -243,4 +242,15 @@
 
 .image-control-wrapper--resizing {
   touch-action: none;
+}
+
+.editor-link {
+  color: var(--chakra-colors-twitter-500);
+  text-decoration: none;
+  pointer-events: none;
+}
+
+.editor-link:hover {
+  text-decoration: underline;
+  cursor: pointer;
 }

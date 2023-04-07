@@ -1,9 +1,9 @@
 import React from "react";
-import { Button, HStack, IconButton, Menu, MenuButton, MenuItem, MenuList, Portal } from "@chakra-ui/react";
+import { Button, HStack, IconButton, Menu, MenuButton, MenuItem, MenuList, Portal, Tooltip } from "@chakra-ui/react";
 import {
   FaAlignCenter, FaAlignJustify, FaAlignLeft, FaAlignRight, FaBold,
   FaCode,
-  FaHeading, FaImage, FaItalic, FaListOl, FaListUl, FaParagraph, FaQuoteLeft,
+  FaHeading, FaImage, FaItalic, FaLink, FaListOl, FaListUl, FaParagraph, FaQuoteLeft,
   FaRedo, FaStrikethrough, FaUnderline, FaUndo
 } from 'react-icons/fa';
 import { LexicalComposerContextWithEditor, useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
@@ -38,11 +38,7 @@ import {
   $isListNode,
   ListNode
 } from "@lexical/list";
-import {
-  $convertFromMarkdownString,
-  $convertToMarkdownString,
-  TRANSFORMERS
-} from '@lexical/markdown';
+import { $isLinkNode, TOGGLE_LINK_COMMAND } from '@lexical/link';
 import {
   $createCodeNode,
   $isCodeNode,
@@ -51,6 +47,8 @@ import {
 } from "@lexical/code";
 import { ChevronDownIcon } from "@chakra-ui/icons";
 import { INSERT_IMAGE_COMMAND } from "./ImagePlugin";
+import { getSelectedNode } from "../utils/getSelectedNode";
+import { sanitizeUrl } from "../utils/url";
 
 const supportedBlockTypes = new Set([
   "paragraph",
@@ -83,6 +81,7 @@ const ToolbarPlugin = () => {
   const [isStrikethrough, setIsStrikethrough] = React.useState(false);
   const [isUnderline, setIsUnderline] = React.useState(false);
   const [isCode, setIsCode] = React.useState(false);
+  const [isLink, setIsLink] = React.useState(false);
   const [codeLanguage, setCodeLanguage] = React.useState("");
   const [blockType, setBlockType] = React.useState<keyof typeof blockTypeToBlockName>(
     "paragraph"
@@ -145,6 +144,15 @@ const ToolbarPlugin = () => {
       setIsStrikethrough(selection.hasFormat('strikethrough'));
       setIsUnderline(selection.hasFormat('underline'));
       setIsCode(selection.hasFormat('code'))
+
+      // Update links
+      const node = getSelectedNode(selection);
+      const parent = node.getParent();
+      if ($isLinkNode(parent) || $isLinkNode(node)) {
+        setIsLink(true);
+      } else {
+        setIsLink(false);
+      }
     }
   }, [editor]);
 
@@ -182,22 +190,43 @@ const ToolbarPlugin = () => {
     );
   }, [updateToolbar, editor]);
 
+  const insertLink = React.useCallback(() => {
+    if (!isLink) {
+      editor.dispatchCommand(TOGGLE_LINK_COMMAND, sanitizeUrl('https://'));
+    } else {
+      editor.dispatchCommand(TOGGLE_LINK_COMMAND, null);
+    }
+  }, [editor, isLink]);
+
   return (
-    <HStack px={2} py={1} overflow={"auto"} position={"sticky"} bg={"gray.100"} borderRadius={"md"} top={0} zIndex={10}>
-      <IconButton
-        size={"sm"}
-        onClick={() => editor.dispatchCommand(UNDO_COMMAND, undefined)}
-        isDisabled={!canUndo}
-        icon={<FaUndo />}
-        aria-label={"后退"}
-      />
-      <IconButton
-        size={"sm"}
-        onClick={() => editor.dispatchCommand(REDO_COMMAND, undefined)}
-        isDisabled={!canRedo}
-        icon={<FaRedo />}
-        aria-label={"前进"}
-      />
+    <HStack
+      px={2}
+      py={1}
+      overflow={"auto"}
+      position={"sticky"}
+      bg={"white"}
+      borderRadius={"md"}
+      top={0}
+      zIndex={10}
+    >
+      <Tooltip label='后退'>
+        <IconButton
+          size={"sm"}
+          onClick={() => editor.dispatchCommand(UNDO_COMMAND, undefined)}
+          isDisabled={!canUndo}
+          icon={<FaUndo />}
+          aria-label={"后退"}
+        />
+      </Tooltip>
+      <Tooltip label='前进'>
+        <IconButton
+          size={"sm"}
+          onClick={() => editor.dispatchCommand(REDO_COMMAND, undefined)}
+          isDisabled={!canRedo}
+          icon={<FaRedo />}
+          aria-label={"前进"}
+        />
+      </Tooltip>
       {supportedBlockTypes.has(blockType) && (
         <BlockOptionsDropdownList
           editor={editor}
@@ -208,74 +237,103 @@ const ToolbarPlugin = () => {
         null
       ) : (
         <>
-          <IconButton
-            size={"sm"}
-            onClick={() => editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'bold')}
-            colorScheme={isBold ? "twitter" : undefined}
-            icon={<FaBold />}
-            aria-label={"加粗"}
-          />
-          <IconButton
-            size={"sm"}
-            onClick={() => editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'italic')}
-            colorScheme={isItalic ? "twitter" : undefined}
-            icon={<FaItalic />}
-            aria-label={"斜体"}
-          />
-          <IconButton
-            size={"sm"}
-            onClick={() => editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'strikethrough')}
-            colorScheme={isStrikethrough ? "twitter" : undefined}
-            icon={<FaStrikethrough />}
-            aria-label={"中横线"}
-          />
-          <IconButton
-            size={"sm"}
-            onClick={() => editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'underline')}
-            colorScheme={isUnderline ? "twitter" : undefined}
-            icon={<FaUnderline />}
-            aria-label={"下划线"}
-          />
-          <IconButton
-            size={"sm"}
-            onClick={() => editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'code')}
-            colorScheme={isCode ? "twitter" : undefined}
-            icon={<FaCode />}
-            aria-label={"代码"}
-          />
-          <IconButton
-            size={"sm"}
-            onClick={() => editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, 'left')}
-            icon={<FaAlignLeft />}
-            aria-label={"居左对齐"}
-          />
-          <IconButton
-            size={"sm"}
-            onClick={() => editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, 'center')}
-            icon={<FaAlignCenter />}
-            aria-label={"居中对齐"}
-          />
-          <IconButton
-            size={"sm"}
-            onClick={() => editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, 'right')}
-            icon={<FaAlignRight />}
-            aria-label={"居右对齐"}
-          />
-          <IconButton
-            size={"sm"}
-            onClick={() => editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, 'justify')}
-            icon={<FaAlignJustify />}
-            aria-label={"两端对齐"}
-          />
-          <label>
-            <input multiple style={{ display: 'none' }} type="file" ref={assetFileUploadRef} onChange={onFilesChange} />
+          <Tooltip label='加粗'>
             <IconButton
               size={"sm"}
-              onClick={openUpload}
-              icon={<FaImage />}
-              aria-label={"图片"}
+              onClick={() => editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'bold')}
+              colorScheme={isBold ? "twitter" : undefined}
+              icon={<FaBold />}
+              aria-label={"加粗"}
             />
-          </label>
+          </Tooltip>
+          <Tooltip label='斜体'>
+            <IconButton
+              size={"sm"}
+              onClick={() => editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'italic')}
+              colorScheme={isItalic ? "twitter" : undefined}
+              icon={<FaItalic />}
+              aria-label={"斜体"}
+            />
+          </Tooltip>
+          <Tooltip label='删除线'>
+            <IconButton
+              size={"sm"}
+              onClick={() => editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'strikethrough')}
+              colorScheme={isStrikethrough ? "twitter" : undefined}
+              icon={<FaStrikethrough />}
+              aria-label={"删除线"}
+            />
+          </Tooltip>
+          <Tooltip label='下划线'>
+            <IconButton
+              size={"sm"}
+              onClick={() => editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'underline')}
+              colorScheme={isUnderline ? "twitter" : undefined}
+              icon={<FaUnderline />}
+              aria-label={"下划线"}
+            />
+          </Tooltip>
+          <Tooltip label='代码'>
+            <IconButton
+              size={"sm"}
+              onClick={() => editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'code')}
+              colorScheme={isCode ? "twitter" : undefined}
+              icon={<FaCode />}
+              aria-label={"代码"}
+            />
+          </Tooltip>
+          <Tooltip label='插入链接'>
+            <IconButton
+              size={"sm"}
+              onClick={insertLink}
+              colorScheme={isLink ? "twitter" : undefined}
+              icon={<FaLink />}
+              aria-label={"插入链接"}
+            />
+          </Tooltip>
+          <Tooltip label='居左对齐'>
+            <IconButton
+              size={"sm"}
+              onClick={() => editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, 'left')}
+              icon={<FaAlignLeft />}
+              aria-label={"居左对齐"}
+            />
+          </Tooltip>
+          <Tooltip label='居中对齐'>
+            <IconButton
+              size={"sm"}
+              onClick={() => editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, 'center')}
+              icon={<FaAlignCenter />}
+              aria-label={"居中对齐"}
+            />
+          </Tooltip>
+          <Tooltip label='居右对齐'>
+            <IconButton
+              size={"sm"}
+              onClick={() => editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, 'right')}
+              icon={<FaAlignRight />}
+              aria-label={"居右对齐"}
+            />
+          </Tooltip>
+          <Tooltip label='两端对齐'>
+            <IconButton
+              size={"sm"}
+              onClick={() => editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, 'justify')}
+              icon={<FaAlignJustify />}
+              aria-label={"两端对齐"}
+            />
+          </Tooltip>
+          <Tooltip label='上传图片'>
+            <label>
+              <input multiple style={{ display: 'none' }} type="file" ref={assetFileUploadRef} onChange={onFilesChange} />
+              <IconButton
+                size={"sm"}
+                onClick={openUpload}
+                icon={<FaImage />}
+                aria-label={"上传图片"}
+              />
+            </label>
+          </Tooltip>
         </>
       )}
     </HStack>

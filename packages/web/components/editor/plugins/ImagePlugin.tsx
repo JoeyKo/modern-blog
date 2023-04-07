@@ -1,3 +1,4 @@
+import { CAN_USE_DOM } from "@/shared/canUseDOM";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 import { $wrapNodeInElement, mergeRegister } from "@lexical/utils";
 import {
@@ -27,10 +28,7 @@ export type InsertImagePayload = Readonly<ImagePayload>;
 export const INSERT_IMAGE_COMMAND: LexicalCommand<InsertImagePayload> = createCommand(
   "INSERT_IMAGE_COMMAND"
 );
-export const CAN_USE_DOM: boolean =
-  typeof window !== 'undefined' &&
-  typeof window.document !== 'undefined' &&
-  typeof window.document.createElement !== 'undefined';
+
 export default function ImagesPlugin({
   captionsEnabled
 }: {
