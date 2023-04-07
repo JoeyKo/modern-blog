@@ -1,3 +1,5 @@
+TODO: replace `chakra-ui` with `tailwindcss`
+
 1. Install
 ```
 yarn install
