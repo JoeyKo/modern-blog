@@ -202,7 +202,7 @@ function getDragSelection(event: DragEvent): Range | null | undefined {
         ? (target as Document).defaultView
         : (target as Element).ownerDocument.defaultView;
   const domSelection = !CAN_USE_DOM ? null : (targetWindow || window).getSelection();;
-  console.log(domSelection)
+
   if (document.caretRangeFromPoint) {
     range = document.caretRangeFromPoint(event.clientX, event.clientY);
   } else if (event.rangeParent && domSelection !== null) {

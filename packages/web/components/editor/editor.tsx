@@ -3,7 +3,7 @@ import './index.css';
 import { LexicalComposer } from '@lexical/react/LexicalComposer';
 import { ContentEditable } from '@lexical/react/LexicalContentEditable';
 import LexicalErrorBoundary from '@lexical/react/LexicalErrorBoundary';
-import {AutoFocusPlugin} from '@lexical/react/LexicalAutoFocusPlugin';
+import { AutoFocusPlugin } from '@lexical/react/LexicalAutoFocusPlugin';
 import { HeadingNode, QuoteNode } from "@lexical/rich-text";
 import { TableCellNode, TableNode, TableRowNode } from "@lexical/table";
 import { ListItemNode, ListNode } from "@lexical/list";
@@ -26,6 +26,7 @@ import FloatingLinkEditorPlugin from './plugins/FloatingLinkEditorPlugin';
 import { CAN_USE_DOM } from '@/shared/canUseDOM';
 import LinkPlugin from './plugins/LinkPlugin';
 import ClickableLinkPlugin from './plugins/ClickableLinkPlugin';
+import CodeHighlightPlugin from './plugins/CodeHighlightPlugin';
 
 function onError(err: Error) {
   console.log(err)
@@ -59,9 +60,6 @@ const ArticleEditor = () => {
       QuoteNode,
       CodeNode,
       CodeHighlightNode,
-      TableNode,
-      TableCellNode,
-      TableRowNode,
       AutoLinkNode,
       LinkNode,
       ImageNode
@@ -111,6 +109,7 @@ const ArticleEditor = () => {
         </Box>
         <AutoFocusPlugin />
         <OnChangePlugin onChange={onChange} />
+        <CodeHighlightPlugin />
         <ListPlugin />
         <ImagePlugin />
         {floatingAnchorElem && !isSmallWidthViewport && (

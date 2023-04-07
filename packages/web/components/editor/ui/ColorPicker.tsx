@@ -115,7 +115,7 @@ export default function ColorPicker({
         ref={innerDivRef}
       >
         <HStack mb={3}>
-          <Text>Hex</Text>
+          <Text as="span" fontSize={"sm"}>Hex</Text>
           <Input size="sm" onChange={e => onSetHex(e.target.value)} value={inputColor} />
         </HStack>
         <Box className="color-picker-basic-color">

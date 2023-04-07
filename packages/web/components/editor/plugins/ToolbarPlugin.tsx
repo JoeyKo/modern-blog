@@ -21,11 +21,15 @@ import {
   $createTextNode,
   $createParagraphNode,
   COMMAND_PRIORITY_LOW,
+  NodeKey,
+  $getNodeByKey,
+  LexicalEditor,
 } from 'lexical';
 import {
   $getSelectionStyleValueForProperty,
   $patchStyleText,
   $setBlocksType,
+  $isParentElementRTL,
 } from "@lexical/selection";
 import { $getNearestNodeOfType, mergeRegister } from '@lexical/utils';
 import {
@@ -44,8 +48,9 @@ import { $isLinkNode, TOGGLE_LINK_COMMAND } from '@lexical/link';
 import {
   $createCodeNode,
   $isCodeNode,
-  getDefaultCodeLanguage,
-  getCodeLanguages
+  CODE_LANGUAGE_FRIENDLY_NAME_MAP,
+  CODE_LANGUAGE_MAP,
+  getLanguageFriendlyName,
 } from "@lexical/code";
 import { ChevronDownIcon } from "@chakra-ui/icons";
 import { INSERT_IMAGE_COMMAND } from "./ImagePlugin";
@@ -77,10 +82,49 @@ const blockTypeToBlockName = {
   code: "代码片段",
 };
 
+function getCodeLanguageOptions(): [string, string][] {
+  const options: [string, string][] = [];
+
+  for (const [lang, friendlyName] of Object.entries(
+    CODE_LANGUAGE_FRIENDLY_NAME_MAP,
+  )) {
+    options.push([lang, friendlyName]);
+  }
+
+  return options;
+}
+
+const CODE_LANGUAGE_OPTIONS = getCodeLanguageOptions();
+
+const FONT_FAMILY_OPTIONS: [string, string][] = [
+  ['Arial', 'Arial'],
+  ['Courier New', 'Courier New'],
+  ['Georgia', 'Georgia'],
+  ['Times New Roman', 'Times New Roman'],
+  ['Trebuchet MS', 'Trebuchet MS'],
+  ['Verdana', 'Verdana'],
+];
+
+const FONT_SIZE_OPTIONS: [string, string][] = [
+  ['10px', '10px'],
+  ['11px', '11px'],
+  ['12px', '12px'],
+  ['13px', '13px'],
+  ['14px', '14px'],
+  ['15px', '15px'],
+  ['16px', '16px'],
+  ['17px', '17px'],
+  ['18px', '18px'],
+  ['19px', '19px'],
+  ['20px', '20px'],
+];
+
 const ToolbarPlugin = () => {
   const [editor] = useLexicalComposerContext();
   const [canUndo, setCanUndo] = React.useState(false);
   const [canRedo, setCanRedo] = React.useState(false);
+  const [fontSize, setFontSize] = React.useState<string>('15px');
+  const [fontFamily, setFontFamily] = React.useState<string>('Arial');
   const [isBold, setIsBold] = React.useState(false);
   const [isItalic, setIsItalic] = React.useState(false);
   const [isStrikethrough, setIsStrikethrough] = React.useState(false);
@@ -90,6 +134,10 @@ const ToolbarPlugin = () => {
   const [bgColor, setBgColor] = React.useState<string>('#fff');
   const [isLink, setIsLink] = React.useState(false);
   const [codeLanguage, setCodeLanguage] = React.useState("");
+  const [isRTL, setIsRTL] = React.useState(false);
+  const [selectedElementKey, setSelectedElementKey] = React.useState<NodeKey | null>(
+    null,
+  );
   const [blockType, setBlockType] = React.useState<keyof typeof blockTypeToBlockName>(
     "paragraph"
   );
@@ -131,6 +179,7 @@ const ToolbarPlugin = () => {
       const elementDOM = editor.getElementByKey(elementKey);
 
       if (elementDOM !== null) {
+        setSelectedElementKey(elementKey);
         if ($isListNode(element)) {
           const parentList = $getNearestNodeOfType(anchorNode, ListNode);
           const type = parentList ? parentList.getTag() : element.getTag();
@@ -141,7 +190,12 @@ const ToolbarPlugin = () => {
             : element.getType();
           setBlockType(type);
           if ($isCodeNode(element)) {
-            setCodeLanguage(element.getLanguage() || getDefaultCodeLanguage());
+            const language =
+              element.getLanguage() as keyof typeof CODE_LANGUAGE_MAP;
+            setCodeLanguage(
+              language ? CODE_LANGUAGE_MAP[language] || language : '',
+            );
+            return;
           }
         }
       }
@@ -151,6 +205,7 @@ const ToolbarPlugin = () => {
       setIsStrikethrough(selection.hasFormat('strikethrough'));
       setIsUnderline(selection.hasFormat('underline'));
       setIsCode(selection.hasFormat('code'))
+      setIsRTL($isParentElementRTL(selection));
 
       // Update links
       const node = getSelectedNode(selection);
@@ -160,7 +215,12 @@ const ToolbarPlugin = () => {
       } else {
         setIsLink(false);
       }
-
+      setFontSize(
+        $getSelectionStyleValueForProperty(selection, 'font-size', '15px'),
+      );
+      setFontFamily(
+        $getSelectionStyleValueForProperty(selection, 'font-family', 'Arial'),
+      );
       setFontColor(
         $getSelectionStyleValueForProperty(selection, 'color', '#000'),
       );
@@ -226,10 +286,10 @@ const ToolbarPlugin = () => {
     },
     [applyStyleText],
   );
-  
+
   const onBgColorSelect = React.useCallback(
     (value: string) => {
-      applyStyleText({'background-color': value});
+      applyStyleText({ 'background-color': value });
     },
     [applyStyleText],
   );
@@ -241,6 +301,20 @@ const ToolbarPlugin = () => {
       editor.dispatchCommand(TOGGLE_LINK_COMMAND, null);
     }
   }, [editor, isLink]);
+
+  const onCodeLanguageSelect = React.useCallback(
+    (value: string) => {
+      editor.update(() => {
+        if (selectedElementKey !== null) {
+          const node = $getNodeByKey(selectedElementKey);
+          if ($isCodeNode(node)) {
+            node.setLanguage(value);
+          }
+        }
+      });
+    },
+    [editor, selectedElementKey],
+  );
 
   return (
     <HStack
@@ -278,9 +352,32 @@ const ToolbarPlugin = () => {
         />
       )}
       {blockType === "code" ? (
-        null
+        <Menu>
+          <MenuButton as={Button} size="sm" rightIcon={<ChevronDownIcon />}>
+            {getLanguageFriendlyName(codeLanguage)}
+          </MenuButton>
+          <Portal>
+            <MenuList fontSize={"sm"}>
+              {CODE_LANGUAGE_OPTIONS.map(([value, name]) => {
+                return (
+                  <MenuItem key={value} onClick={() => onCodeLanguageSelect(value)}>{name}</MenuItem>
+                );
+              })}
+            </MenuList>
+          </Portal>
+        </Menu>
       ) : (
         <>
+          <FontDropDown
+            style={'font-family'}
+            value={fontFamily}
+            editor={editor}
+          />
+          <FontDropDown
+            style={'font-size'}
+            value={fontSize}
+            editor={editor}
+          />
           <Tooltip label='加粗'>
             <IconButton
               size={"sm"}
@@ -446,10 +543,19 @@ const BlockOptionsDropdownList = ({
       });
     } else if (listType === "code" && blockType !== "code") {
       editor.update(() => {
-        const selection = $getSelection();
+        let selection = $getSelection();
 
         if ($isRangeSelection(selection)) {
-          $setBlocksType(selection, () => $createCodeNode());
+          if (selection.isCollapsed()) {
+            $setBlocksType(selection, () => $createCodeNode());
+          } else {
+            const textContent = selection.getTextContent();
+            const codeNode = $createCodeNode();
+            selection.insertNodes([codeNode]);
+            selection = $getSelection();
+            if ($isRangeSelection(selection))
+              selection.insertRawText(textContent);
+          }
         }
       });
     } else if (listType === "ol" && blockType !== "ol") {
@@ -465,7 +571,7 @@ const BlockOptionsDropdownList = ({
         {blockTypeToBlockName[blockType]}
       </MenuButton>
       <Portal>
-        <MenuList>
+        <MenuList fontSize={"sm"}>
           <MenuItem icon={<FaParagraph />} onClick={() => formatList('paragraph')}>{blockTypeToBlockName['paragraph']}</MenuItem>
           <MenuItem icon={<FaHeading />} onClick={() => formatList('h1')}>{blockTypeToBlockName['h1']}</MenuItem>
           <MenuItem icon={<FaHeading />} onClick={() => formatList('h2')}>{blockTypeToBlockName['h2']}</MenuItem>
@@ -478,6 +584,47 @@ const BlockOptionsDropdownList = ({
       </Portal>
     </Menu>
   )
+}
+
+function FontDropDown({
+  editor,
+  value,
+  style,
+}: {
+  editor: LexicalEditor;
+  value: string;
+  style: string;
+}): JSX.Element {
+  const handleClick = React.useCallback(
+    (option: string) => {
+      editor.update(() => {
+        const selection = $getSelection();
+        if ($isRangeSelection(selection)) {
+          $patchStyleText(selection, {
+            [style]: option,
+          });
+        }
+      });
+    },
+    [editor, style],
+  );
+
+  return (
+    <Menu>
+      <MenuButton as={Button} size="sm" rightIcon={<ChevronDownIcon />}>
+        {value}
+      </MenuButton>
+      <Portal>
+        <MenuList fontSize={"sm"}>
+          {(style === 'font-family' ? FONT_FAMILY_OPTIONS : FONT_SIZE_OPTIONS).map(
+            ([option, text]) => (
+              <MenuItem key={option} onClick={() => handleClick(option)}>{text}</MenuItem>
+            ),
+          )}
+        </MenuList>
+      </Portal>
+    </Menu>
+  );
 }
 
 export default ToolbarPlugin;

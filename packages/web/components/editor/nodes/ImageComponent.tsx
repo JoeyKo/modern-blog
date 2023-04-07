@@ -295,7 +295,7 @@ export default function ImageComponent({
 
   const draggable = isSelected && $isNodeSelection(selection) && !isResizing;
   const isFocused = isSelected || isResizing;
-  console.log(isFocused)
+
   return (
     <Suspense fallback={null}>
       <>
