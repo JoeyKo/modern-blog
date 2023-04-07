@@ -23,6 +23,8 @@ import {
   COMMAND_PRIORITY_LOW,
 } from 'lexical';
 import {
+  $getSelectionStyleValueForProperty,
+  $patchStyleText,
   $setBlocksType,
 } from "@lexical/selection";
 import { $getNearestNodeOfType, mergeRegister } from '@lexical/utils';
@@ -49,6 +51,9 @@ import { ChevronDownIcon } from "@chakra-ui/icons";
 import { INSERT_IMAGE_COMMAND } from "./ImagePlugin";
 import { getSelectedNode } from "../utils/getSelectedNode";
 import { sanitizeUrl } from "../utils/url";
+import ColorPicker from "../ui/ColorPicker";
+import { MdFormatColorText } from "react-icons/md";
+import { IoMdColorFill } from "react-icons/io";
 
 const supportedBlockTypes = new Set([
   "paragraph",
@@ -81,6 +86,8 @@ const ToolbarPlugin = () => {
   const [isStrikethrough, setIsStrikethrough] = React.useState(false);
   const [isUnderline, setIsUnderline] = React.useState(false);
   const [isCode, setIsCode] = React.useState(false);
+  const [fontColor, setFontColor] = React.useState<string>('#000');
+  const [bgColor, setBgColor] = React.useState<string>('#fff');
   const [isLink, setIsLink] = React.useState(false);
   const [codeLanguage, setCodeLanguage] = React.useState("");
   const [blockType, setBlockType] = React.useState<keyof typeof blockTypeToBlockName>(
@@ -153,6 +160,17 @@ const ToolbarPlugin = () => {
       } else {
         setIsLink(false);
       }
+
+      setFontColor(
+        $getSelectionStyleValueForProperty(selection, 'color', '#000'),
+      );
+      setBgColor(
+        $getSelectionStyleValueForProperty(
+          selection,
+          'background-color',
+          '#fff',
+        ),
+      );
     }
   }, [editor]);
 
@@ -189,6 +207,32 @@ const ToolbarPlugin = () => {
       ),
     );
   }, [updateToolbar, editor]);
+
+  const applyStyleText = React.useCallback(
+    (styles: Record<string, string>) => {
+      editor.update(() => {
+        const selection = $getSelection();
+        if ($isRangeSelection(selection)) {
+          $patchStyleText(selection, styles);
+        }
+      });
+    },
+    [editor],
+  );
+
+  const onFontColorSelect = React.useCallback(
+    (value: string) => {
+      applyStyleText({ color: value });
+    },
+    [applyStyleText],
+  );
+  
+  const onBgColorSelect = React.useCallback(
+    (value: string) => {
+      applyStyleText({'background-color': value});
+    },
+    [applyStyleText],
+  );
 
   const insertLink = React.useCallback(() => {
     if (!isLink) {
@@ -282,6 +326,18 @@ const ToolbarPlugin = () => {
               aria-label={"代码"}
             />
           </Tooltip>
+          <ColorPicker
+            icon={<MdFormatColorText />}
+            label="颜色"
+            color={fontColor}
+            onChange={onFontColorSelect}
+          />
+          <ColorPicker
+            icon={<IoMdColorFill />}
+            label="背景"
+            color={bgColor}
+            onChange={onBgColorSelect}
+          />
           <Tooltip label='插入链接'>
             <IconButton
               size={"sm"}

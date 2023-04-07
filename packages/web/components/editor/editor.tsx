@@ -3,6 +3,7 @@ import './index.css';
 import { LexicalComposer } from '@lexical/react/LexicalComposer';
 import { ContentEditable } from '@lexical/react/LexicalContentEditable';
 import LexicalErrorBoundary from '@lexical/react/LexicalErrorBoundary';
+import {AutoFocusPlugin} from '@lexical/react/LexicalAutoFocusPlugin';
 import { HeadingNode, QuoteNode } from "@lexical/rich-text";
 import { TableCellNode, TableNode, TableRowNode } from "@lexical/table";
 import { ListItemNode, ListNode } from "@lexical/list";
@@ -108,6 +109,7 @@ const ArticleEditor = () => {
             ErrorBoundary={LexicalErrorBoundary}
           />
         </Box>
+        <AutoFocusPlugin />
         <OnChangePlugin onChange={onChange} />
         <ListPlugin />
         <ImagePlugin />
