@@ -113,4 +113,6 @@ Home.getLayout = function getLayout(page: ReactElement) {
   )
 }
 
-export default Home
+export default Home;
+
+export { getServerSideProps } from "@/chakra";

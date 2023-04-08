@@ -1,7 +1,7 @@
 import ArticleEditor from '@/components/editor/editor'
 import { Box, Button, HStack, Input, Text } from '@chakra-ui/react'
 
-export default function Editor() {
+function Editor() {
   return (
     <>
       <HStack h="56px" spacing={5} px='2'>
@@ -13,3 +13,7 @@ export default function Editor() {
     </>
   )
 }
+
+export { getServerSideProps } from "@/chakra";
+
+export default Editor;
