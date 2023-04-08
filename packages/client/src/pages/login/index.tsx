@@ -1,6 +1,3 @@
-/* eslint-disable react/no-unescaped-entities */
-"use client"
-
 import { Center, Container, FormControl, FormHelperText, FormLabel, Input } from "@chakra-ui/react"
 
 const Login: React.FC = () => {
@@ -9,7 +6,7 @@ const Login: React.FC = () => {
       <FormControl>
         <FormLabel>Email address</FormLabel>
         <Input type='email' />
-        <FormHelperText>We'll never share your email.</FormHelperText>
+        <FormHelperText>never share your email.</FormHelperText>
       </FormControl>
     </Container>
   )

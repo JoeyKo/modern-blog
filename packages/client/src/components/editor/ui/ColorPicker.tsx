@@ -1,4 +1,4 @@
-import './ColorPicker.css';
+import styles from './ColorPicker.module.css';
 
 import { ReactNode, useEffect, useMemo, useRef, useState } from 'react';
 import * as React from 'react';
@@ -125,7 +125,7 @@ export default function ColorPicker({
             <Text as="span" fontSize={"sm"}>Hex</Text>
             <Input size="sm" onChange={e => onSetHex(e.target.value)} value={inputColor} />
           </HStack>
-          <Box className="color-picker-basic-color">
+          <Box className={styles.ColorPickerBasicColor}>
             {basicColors.map((basicColor) => (
               <button
                 className={basicColor === selfColor.hex ? ' active' : ''}
@@ -139,12 +139,12 @@ export default function ColorPicker({
             ))}
           </Box>
           <MoveWrapper
-            className="color-picker-saturation"
+            className={styles.ColorPickerSaturation}
             style={{ backgroundColor: `hsl(${selfColor.hsv.h}, 100%, 50%)` }}
             onChange={onMoveSaturation}
           >
             <Box
-              className="color-picker-saturation_cursor"
+              className={styles.ColorPickerSaturationCursor}
               style={{
                 backgroundColor: selfColor.hex,
                 left: saturationPosition.x,
@@ -152,9 +152,9 @@ export default function ColorPicker({
               }}
             />
           </MoveWrapper>
-          <MoveWrapper className="color-picker-hue" onChange={onMoveHue}>
+          <MoveWrapper className={styles.ColorPickerHue} onChange={onMoveHue}>
             <Box
-              className="color-picker-hue_cursor"
+              className={styles.ColorPickerHueCursor}
               style={{
                 backgroundColor: `hsl(${selfColor.hsv.h}, 100%, 50%)`,
                 left: huePosition.x,

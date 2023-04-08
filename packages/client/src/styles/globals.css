@@ -1,3 +1,12 @@
+body {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif
+}
+
+a.chakra-link,
+a.chakra-link:hover {
+  text-decoration: none;
+}
+
 .ContentEditable__root {
   min-height: calc(100vh - 110px);
   border: 0;

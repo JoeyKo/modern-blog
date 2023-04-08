@@ -3,16 +3,13 @@ import { EditIcon, SearchIcon } from "@chakra-ui/icons"
 import { Link } from "@chakra-ui/next-js"
 import { Button, Flex, HStack, Input, InputGroup, InputLeftElement, Spacer, useColorModeValue } from "@chakra-ui/react"
 import Image from "next/image"
-import { useSelectedLayoutSegment } from 'next/navigation';
 import ToggleColorMode from "../toggle-color-mode";
 
 const Header = () => {
-  const segment = useSelectedLayoutSegment();
   const bg = useColorModeValue('gray.50', 'gray.800')
 
   return (
     <Flex
-      hidden={segment === "editor" || segment === "login"}
       py="2"
       px="2"
       gap='2'

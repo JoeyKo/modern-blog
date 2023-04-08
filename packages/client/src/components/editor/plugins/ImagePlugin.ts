@@ -81,11 +81,6 @@ export default function ImagesPlugin({
   return null;
 }
 
-const TRANSPARENT_IMAGE =
-  'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
-const img = document.createElement('img');
-img.src = TRANSPARENT_IMAGE;
-
 function onDragStart(event: DragEvent): boolean {
   const node = getImageNodeInSelection();
   if (!node) {
@@ -96,6 +91,12 @@ function onDragStart(event: DragEvent): boolean {
     return false;
   }
   dataTransfer.setData('text/plain', '_');
+
+  const TRANSPARENT_IMAGE =
+  'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
+  const img = document.createElement('img');
+  img.src = TRANSPARENT_IMAGE;
+
   dataTransfer.setDragImage(img, 0, 0);
   dataTransfer.setData(
     'application/x-lexical-drag',

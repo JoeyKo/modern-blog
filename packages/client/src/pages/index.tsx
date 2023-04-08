@@ -1,12 +1,12 @@
-"use client"
-
 import { IArticle } from '@/components/article-list/article-card'
 import ArticleList from '@/components/article-list/article-list'
 import { IUser } from '@/components/user-list/user-card'
 import UserList from '@/components/user-list/user-list'
 import { Link } from '@chakra-ui/next-js'
 import { Box, Flex, useColorModeValue } from '@chakra-ui/react'
-import styles from './page.module.css'
+import { NextPageWithLayout } from './_app'
+import Layout from '@/components/layout'
+import { ReactElement } from 'react'
 
 const articleList: IArticle[] = [
   {
@@ -79,7 +79,7 @@ const userList: IUser[] = [
   }
 ]
 
-export default function Home() {
+const Home: NextPageWithLayout = () => {
   const bg = useColorModeValue('gray.50', 'gray.800')
 
   return (
@@ -92,7 +92,7 @@ export default function Home() {
         maxH={'325px'}
         bg={bg}
         px="3" py="1"
-        position={"sticky"} 
+        position={"sticky"}
         top="64px"
         borderRadius={"8"}
       >
@@ -104,3 +104,13 @@ export default function Home() {
     </Flex>
   )
 }
+
+Home.getLayout = function getLayout(page: ReactElement) {
+  return (
+    <Layout>
+      {page}
+    </Layout>
+  )
+}
+
+export default Home

@@ -1,7 +1,5 @@
-"use client"
-
 import ArticleEditor from '@/components/editor/editor'
-import { Box, Button, HStack, Input, Text, useColorModeValue } from '@chakra-ui/react'
+import { Box, Button, HStack, Input, Text } from '@chakra-ui/react'
 
 export default function Editor() {
   return (
