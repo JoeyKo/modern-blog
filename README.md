@@ -1,3 +1,6 @@
+packages/client 为客户端
+packages/api 为服务器端
+
 1. Install
 ```
 yarn install
@@ -14,11 +17,11 @@ lerna run build
 
 4. Add Package
 ```
-lerna add module-1 packages/web
+lerna add module-1 packages/client
 lerna add module-2 packages/api
 ```
 
 5. Remove Package
 ```
-lerna exec 'yarn remove module-1' --scope=web
+lerna exec 'yarn remove module-1' --scope=client
 ```
