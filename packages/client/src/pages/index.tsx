@@ -80,17 +80,15 @@ const userList: IUser[] = [
 ]
 
 const Home: NextPageWithLayout = () => {
-  const bg = useColorModeValue('gray.50', 'gray.800')
-
-  return (
-    <Flex p="2" gap={"6"} maxW="container.xl" margin={"0 auto"} as="main">
+   return (
+    <Flex p="2" gap={"6"} bg={"gray.50"} margin={"0 auto"} as="main">
       <Box flex={1}>
         <ArticleList data={articleList} />
       </Box>
       <Box
         w={"320px"}
         maxH={'325px'}
-        bg={bg}
+        bg={"gray.50"}
         px="3" py="1"
         position={"sticky"}
         top="64px"
@@ -114,5 +112,3 @@ Home.getLayout = function getLayout(page: ReactElement) {
 }
 
 export default Home;
-
-export { getServerSideProps } from "@/chakra";

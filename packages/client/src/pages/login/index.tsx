@@ -12,6 +12,4 @@ const Login: React.FC = () => {
   )
 }
 
-export { getServerSideProps } from "@/chakra";
-
 export default Login

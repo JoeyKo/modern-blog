@@ -3,17 +3,14 @@ import { EditIcon, SearchIcon } from "@chakra-ui/icons"
 import { Link } from "@chakra-ui/next-js"
 import { Button, Flex, HStack, Input, InputGroup, InputLeftElement, Spacer, useColorModeValue } from "@chakra-ui/react"
 import Image from "next/image"
-import ToggleColorMode from "../toggle-color-mode";
 
 const Header = () => {
-  const bg = useColorModeValue('gray.50', 'gray.800')
-
   return (
     <Flex
       py="2"
       px="2"
       gap='2'
-      bg={bg}
+      bg={'gray.50'}
       as="header" 
       boxShadow={"base"} 
       position="sticky" 
@@ -44,7 +41,6 @@ const Header = () => {
       <HStack>
         <Link href="/editor"><Button colorScheme="twitter" leftIcon={<EditIcon />}>写文章</Button></Link>
         <Link href="/login"><Button colorScheme="twitter" variant="outline">登录</Button></Link>
-        <ToggleColorMode />
       </HStack>
     </Flex>
   )

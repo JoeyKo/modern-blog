@@ -1,5 +1,5 @@
 import { AddIcon } from "@chakra-ui/icons";
-import { Button, Flex, Heading, Spacer, Stack, Text } from "@chakra-ui/react"
+import { Button, Flex, Heading, Spacer, Stack, Text, useColorModeValue } from "@chakra-ui/react"
 import Image from "next/image"
 
 export interface IUser {

@@ -17,9 +17,6 @@ export interface IArticle {
 const ArticleCard: React.FC<IArticle> = ({
   id, title, summary, coverImage, user, createdAt
 }) => {
-  const bg = useColorModeValue('gray.50', 'gray.800')
-  const hoverBg = useColorModeValue('gray.100', 'gray.700')
-
   return (
     <Link href={"/article/" + id}>
       <Card
@@ -27,11 +24,11 @@ const ArticleCard: React.FC<IArticle> = ({
         boxShadow={"none"}
         transition="all 0.3s"
         _hover={{
-          bg: hoverBg
+          bg: "gray.100"
         }}
         py={2}
         px={1}
-        bg={bg}
+        bg={"gray.50"}
         direction={{ base: 'column', sm: 'row' }}
       >
         <CardBody p="2">
